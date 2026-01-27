@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吃了么 - 菜谱大全</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.search-section {
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.search-btn:hover {
+    background: #ee5a5a;
+    transform: scale(1.05);
+}
+
+.tags-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.tag-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.9);
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.tag-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.tag-btn.active {
+    background: #ff6b6b;
+    color: white;
+}
+
+.random-section {
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.random-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.random-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.random-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-left: 0.5rem;
+}
+
+.random-btn:hover {
+    transform: scale(1.05);
+}
+
+.random-result {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: #f5576c;
+    font-weight: bold;
+    display: none;
+}
+
+.random-result.show {
+    display: block;
+}
+
+.recipes-section {
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.recipe-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.recipe-card.hidden {
+    display: none;
+}
+
+.recipe-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.recipe-card:hover .recipe-image img {
+    transform: scale(1.1);
+}
+
+.recipe-info {
+    padding: 1rem;
+}
+
+.recipe-name {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.recipe-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.recipe-tag {
+    padding: 0.2rem 0.6rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 0.75rem;
+    border-radius: 10px;
+}
+
+.no-result {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #999;
+    padding: 3rem;
+    display: none;
+}
+
+.no-result.show {
+    display: block;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 80%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.lightbox-close:hover {
+    color: #ff6b6b;
+}
+
+.lightbox-title {
+    color: white;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .random-form {
+        flex-direction: column;
+    }
+    
+    .random-btn {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .recipes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .recipe-image {
+        height: 150px;
+    }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍳 吃了么</h1>
+        <p class="subtitle">今天吃点什么好呢？</p>
+    </header>
+
+    <main>
+        <section class="search-section">
+            <div class="search-form">
+                <input type="text" id="searchInput" placeholder="搜索菜名..." class="search-input">
+                <button onclick="doSearch()" class="search-btn">🔍 搜索</button>
+            </div>
+        </section>
+
+        <section class="tags-section" id="tagsSection">
+            <button class="tag-btn active" data-tag="">全部</button>
+        </section>
+
+        <section class="random-section">
+            <div class="random-form">
+                <label>不知道吃啥？摇一摇！选</label>
+                <input type="number" id="randomCount" min="1" max="10" value="3" class="random-input">
+                <label>个菜</label>
+                <button onclick="doRandom()" class="random-btn">🎲 摇号</button>
+            </div>
+            <p class="random-result" id="randomResult"></p>
+        </section>
+
+        <section class="recipes-section">
+            <p class="no-result" id="noResult">没有找到相关菜谱 😢</p>
+            <div class="recipes-grid" id="recipesGrid"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🍜 美食让生活更美好</p>
+    </footer>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+        <div id="lightbox-title" class="lightbox-title"></div>
+    </div>
+
+    <script>
+const recipesData = [
+    { name: "五花肉炒花菜", image: "五花肉炒花菜/z-image-712786422.png", tags: ["荤菜", "小炒"] },
+    { name: "土豆番茄牛腩", image: "土豆番茄牛腩/z-image-712786422.png", tags: ["荤菜", "汤类"] },
+    { name: "小炒黄牛肉", image: "小炒黄牛肉/z-image-712786422 (1).png", tags: ["荤菜", "小炒"] },
+    { name: "柠檬酸辣虾", image: "柠檬酸辣虾/z-image-712786422.png", tags: ["荤菜"] },
+    { name: "水煮肉片", image: "水煮肉片/z-image-712786422.png", tags: ["荤菜"] },
+    { name: "清炒小河虾", image: "清炒小河虾/z-image-712786422.png", tags: ["荤菜", "小炒"] },
+    { name: "清炒小甜豆", image: "清炒小甜豆/z-image-712786422 (1).png", tags: ["素菜", "小炒"] },
+    { name: "炒土豆粉", image: "炒土豆粉/z-image-712786422 (1).png", tags: ["素菜", "主食"] },
+    { name: "糖醋排骨", image: "糖醋排骨/z-image.png", tags: ["荤菜"] },
+    { name: "红烧汪丫鱼", image: "红烧汪丫鱼/z-image-712786422.png", tags: ["荤菜"] },
+    { name: "红烧肉", image: "红烧肉/z-image-712786422.png", tags: ["荤菜"] },
+    { name: "辣椒炒肉", image: "辣椒炒肉/z-image-712786422.png", tags: ["荤菜", "小炒"] },
+    { name: "酸汤肥牛", image: "酸汤肥牛/z-image-712786422.png", tags: ["荤菜", "汤类"] },
+    { name: "麻辣小龙虾", image: "麻辣小龙虾/z-image-712786422 (1).png", tags: ["荤菜"] }
+];
+
+const allTags = ["荤菜", "素菜", "小炒", "汤类", "主食"];
+let currentTag = "";
+let currentSearch = "";
+let isRandomMode = false;
+let randomRecipes = [];
+
+function init() {
+    const tagsSection = document.getElementById('tagsSection');
+    allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'tag-btn';
+        btn.dataset.tag = tag;
+        btn.textContent = tag;
+        btn.onclick = () => filterByTag(tag);
+        tagsSection.appendChild(btn);
+    });
+    
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doSearch();
+    });
+    
+    renderRecipes();
+}
+
+function renderRecipes() {
+    const grid = document.getElementById('recipesGrid');
+    grid.innerHTML = '';
+    
+    let recipes = isRandomMode ? randomRecipes : recipesData;
+    
+    recipes = recipes.filter(r => {
+        const matchTag = !currentTag || r.tags.includes(currentTag);
+        const matchSearch = !currentSearch || r.name.includes(currentSearch);
+        return matchTag && matchSearch;
+    });
+    
+    const noResult = document.getElementById('noResult');
+    noResult.classList.toggle('show', recipes.length === 0);
+    
+    recipes.forEach(recipe => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.onclick = () => showLightbox(recipe.image, recipe.name);
+        card.innerHTML = `
+            <div class="recipe-image">
+                <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
+            </div>
+            <div class="recipe-info">
+                <h3 class="recipe-name">${recipe.name}</h3>
+                <div class="recipe-tags">
+                    ${recipe.tags.map(t => `<span class="recipe-tag">${t}</span>`).join('')}
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function filterByTag(tag) {
+    currentTag = tag === currentTag ? "" : tag;
+    isRandomMode = false;
+    document.getElementById('randomResult').classList.remove('show');
+    
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === currentTag || (currentTag === "" && btn.dataset.tag === ""));
+    });
+    
+    renderRecipes();
+}
+
+function doSearch() {
+    currentSearch = document.getElementById('searchInput').value.trim();
+    isRandomMode = false;
+    document.getElementById('randomResult').classList.remove('show');
+    renderRecipes();
+}
+
+function doRandom() {
+    const count = parseInt(document.getElementById('randomCount').value) || 3;
+    const shuffled = [...recipesData].sort(() => Math.random() - 0.5);
+    randomRecipes = shuffled.slice(0, Math.min(count, recipesData.length));
+    
+    isRandomMode = true;
+    currentTag = "";
+    currentSearch = "";
+    document.getElementById('searchInput').value = "";
+    
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === "");
+    });
+    
+    const result = document.getElementById('randomResult');
+    result.textContent = `🎉 为您随机选出了 ${randomRecipes.length} 道菜！`;
+    result.classList.add('show');
+    
+    renderRecipes();
+}
+
+function showLightbox(src, title) {
+    const lightbox = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-title').textContent = title;
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+});
+
+init();
+    </script>
+</body>
+</html>
