@@ -49,7 +49,7 @@
             {% else %}
             <div class="recipes-grid">
                 {% for recipe in recipes %}
-                <div class="recipe-card">
+                <div class="recipe-card" onclick="showLightbox('{{ recipe.image_path }}', '{{ recipe.name }}')">
                     <div class="recipe-image">
                         <img src="{{ recipe.image_path }}" alt="{{ recipe.name }}" loading="lazy">
                     </div>
@@ -71,5 +71,36 @@
     <footer>
         <p>🍜 美食让生活更美好</p>
     </footer>
+
+    <!-- Lightbox 弹窗 -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="">
+        <div id="lightbox-title" class="lightbox-title"></div>
+    </div>
+
+    <script>
+        function showLightbox(src, title) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const titleEl = document.getElementById('lightbox-title');
+            img.src = src;
+            titleEl.textContent = title;
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
 </body>
 </html>
