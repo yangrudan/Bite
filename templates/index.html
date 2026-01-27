@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吃了么 - 菜谱大全</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>🍳 吃了么</h1>
+        <p class="subtitle">今天吃点什么好呢？</p>
+    </header>
+
+    <main>
+        <!-- 搜索栏 -->
+        <section class="search-section">
+            <form action="/search" method="get" class="search-form">
+                <input type="text" name="q" placeholder="搜索菜名..." value="{{ search_query }}" class="search-input">
+                <button type="submit" class="search-btn">🔍 搜索</button>
+            </form>
+        </section>
+
+        <!-- 标签筛选 -->
+        <section class="tags-section">
+            <a href="/" class="tag-btn {% if current_tag == "" and not is_random %}active{% endif %}">全部</a>
+            {% for tag in tags %}
+            <a href="/filter?tag={{ tag }}" class="tag-btn {% if current_tag == tag %}active{% endif %}">{{ tag }}</a>
+            {% endfor %}
+        </section>
+
+        <!-- 摇号功能 -->
+        <section class="random-section">
+            <form action="/random" method="get" class="random-form">
+                <label>不知道吃啥？摇一摇！选</label>
+                <input type="number" name="count" min="1" max="10" value="3" class="random-input">
+                <label>个菜</label>
+                <button type="submit" class="random-btn">🎲 摇号</button>
+            </form>
+            {% if is_random %}
+            <p class="random-result">🎉 为您随机选出了 {{ recipes | length }} 道菜！</p>
+            {% endif %}
+        </section>
+
+        <!-- 菜谱展示 -->
+        <section class="recipes-section">
+            {% if recipes | length == 0 %}
+            <p class="no-result">没有找到相关菜谱 😢</p>
+            {% else %}
+            <div class="recipes-grid">
+                {% for recipe in recipes %}
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="{{ recipe.image_path }}" alt="{{ recipe.name }}" loading="lazy">
+                    </div>
+                    <div class="recipe-info">
+                        <h3 class="recipe-name">{{ recipe.name }}</h3>
+                        <div class="recipe-tags">
+                            {% for tag in recipe.tags %}
+                            <span class="recipe-tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>🍜 美食让生活更美好</p>
+    </footer>
+</body>
+</html>
